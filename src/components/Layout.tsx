@@ -32,9 +32,6 @@ export default function Layout({ children, activeTab, setActiveTab }: LayoutProp
           <h1 className="font-serif italic text-3xl tracking-tight text-ink">LearnMyMind</h1>
           <div className="text-[9px] font-mono uppercase tracking-[0.3em] opacity-30 text-ink">Cognitive Laboratory</div>
         </div>
-        <div className="px-3 py-1 rounded-full border border-line flex items-center justify-center text-[9px] font-mono opacity-40 whitespace-nowrap">
-          BETA v1.2
-        </div>
       </header>
 
       {/* Main Content */}
@@ -58,14 +55,19 @@ export default function Layout({ children, activeTab, setActiveTab }: LayoutProp
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
               className={`relative flex flex-col items-center gap-1 transition-all duration-300 ${
-                activeTab === tab.id ? 'text-accent scale-110' : 'text-neutral hover:text-ink'
+                activeTab === tab.id ? 'text-accent scale-105' : 'text-neutral hover:text-ink'
               }`}
             >
-              <tab.icon size={20} strokeWidth={activeTab === tab.id ? 2.5 : 1.5} />
+              <tab.icon size={18} strokeWidth={activeTab === tab.id ? 2.5 : 1.5} />
+              <span className={`text-[9px] font-mono uppercase tracking-wider transition-opacity duration-300 ${
+                activeTab === tab.id ? 'opacity-100' : 'opacity-40'
+              }`}>
+                {tab.label}
+              </span>
               {activeTab === tab.id && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute -bottom-2 w-1.5 h-1.5 rounded-full bg-accent"
+                  className="absolute -bottom-3 w-1 h-1 rounded-full bg-accent"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}

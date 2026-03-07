@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Brain, ArrowLeft, ArrowRight, Home, CheckCircle2, AlertCircle, Bell, Lock, Menu, X, Eye, MessageSquare, Zap, Mic, Play } from 'lucide-react';
 import { User, UserState } from '../types';
+import LottieBackground from './LottieBackground';
 
 interface Workout1Props {
   user: User;
@@ -185,8 +186,8 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
     }
   }, [currentScreen]);
 
-  const renderNav = (showHome = false) => (
-    <div className="absolute top-8 left-8 right-8 flex justify-between items-center z-50">
+  const renderNav = (showHome = false, isDark = false) => (
+    <div className={`absolute top-8 left-8 right-8 flex justify-between items-center z-50 ${isDark ? 'text-white' : 'text-ink'}`}>
       <div className="flex items-center gap-6">
         <button onClick={onBack} className="btn-passive flex items-center gap-2">
           <ArrowLeft size={14} /> Back
@@ -202,13 +203,17 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
         {!isDrill && (
           <button 
             onClick={onNowClick}
-            className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-all duration-500 bg-accent/5 px-4 py-2 rounded-full text-accent border border-accent/10"
+            className={`flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] transition-all duration-500 px-4 py-2 rounded-full border ${
+              isDark 
+                ? 'bg-white/10 text-white border-white/20 hover:bg-white/20' 
+                : 'bg-accent/5 text-accent border-accent/10 opacity-40 hover:opacity-100'
+            }`}
           >
             <Brain size={12} /> Reset
           </button>
         )}
         {showHome && !isDrill && (
-          <button onClick={onBack} className="opacity-30 hover:opacity-100 transition-all duration-500">
+          <button onClick={onBack} className={`${isDark ? 'text-white/40 hover:text-white' : 'opacity-30 hover:opacity-100'} transition-all duration-500`}>
             <Home size={18} />
           </button>
         )}
@@ -216,7 +221,7 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
     </div>
   );
 
-  const renderCTA = (text: string, next: Screen, delay = 0) => (
+  const renderCTA = (text: string, next: Screen, delay = 0, isDark = false) => (
     <motion.div 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
@@ -228,7 +233,7 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
           setCurrentScreen(next);
           if (window.navigator.vibrate) window.navigator.vibrate(10);
         }}
-        className="btn-primary min-w-[240px] hover:shadow-accent/30"
+        className={`${isDark ? 'bg-white text-accent hover:bg-white/90' : 'btn-primary'} min-w-[240px] px-10 py-4 rounded-xl font-medium tracking-tight shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2`}
       >
         {text}
       </button>
@@ -237,7 +242,9 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
 
   return (
     <div className="fixed inset-0 bg-bg z-50 overflow-hidden flex flex-col">
-      <AnimatePresence>
+      <LottieBackground src="/wave-bg.lottie" opacity={0.2} className="z-0" />
+      <div className="relative z-10 flex-1 flex flex-col overflow-hidden">
+        <AnimatePresence>
         {showSections && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -299,9 +306,9 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 relative flex flex-col items-center overflow-hidden"
+            className="flex-1 relative flex flex-col items-center overflow-hidden bg-accent text-white"
           >
-            {renderNav()}
+            {renderNav(false, true)}
             
             {/* Centered Animation */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -313,12 +320,12 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1.5, opacity: [0, 0.2, 0] }}
                       transition={{ duration: 4, ease: "easeOut" }}
-                      className="absolute inset-0 bg-accent rounded-full blur-3xl"
+                      className="absolute inset-0 bg-white rounded-full blur-3xl"
                     />
                   )}
                 </AnimatePresence>
-                <div className="w-32 h-32 border border-accent/20 rounded-full flex items-center justify-center">
-                  <Brain size={32} className="opacity-20 text-accent" />
+                <div className="w-32 h-32 border border-white/20 rounded-full flex items-center justify-center">
+                  <Brain size={32} className="opacity-20 text-white" />
                 </div>
               </div>
             </div>
@@ -330,7 +337,7 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.2 }}
-                  className="font-serif italic text-2xl"
+                  className="font-serif italic text-2xl text-white"
                 >
                   Stress often begins as a sentence.
                 </motion.p>
@@ -338,13 +345,13 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2.4 }}
-                  className="text-sm opacity-50"
+                  className="text-sm text-white/50"
                 >
                   Before you notice your body.
                 </motion.p>
               </div>
             </div>
-            {showCTA && renderCTA('Begin Workout', 'edu_intro')}
+            {showCTA && renderCTA('Begin Workout', 'edu_intro', 0, true)}
           </motion.div>
         )}
 
@@ -643,14 +650,14 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg"
+            className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white"
           >
-            {renderNav()}
+            {renderNav(false, true)}
             <div className="text-center space-y-8">
               <Zap size={48} className="mx-auto opacity-40" />
               <div className="space-y-2">
-                <h2 className="font-serif italic text-4xl">Training Begins</h2>
-                <p className="opacity-60">Reps for Story Separation</p>
+                <h2 className="font-serif italic text-4xl text-white">Training Begins</h2>
+                <p className="text-white/60">Reps for Story Separation</p>
               </div>
               <div className="space-y-4 pt-12">
                 {['“What if this means something bad?”', '“They probably think differently of me.”', '“This doesn’t feel right.”'].map((t, i) => (
@@ -659,14 +666,14 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 0.4 }}
                     transition={{ delay: i * 0.5 }}
-                    className="text-sm italic"
+                    className="text-sm italic text-white"
                   >
                     {t}
                   </motion.p>
                 ))}
               </div>
-              <p className="text-xs opacity-60 pt-8">You notice them — and choose not to follow.</p>
-              {renderCTA('Continue Reps', 'd1_intro')}
+              <p className="text-xs text-white/60 pt-8">You notice them — and choose not to follow.</p>
+              {renderCTA('Continue Reps', 'd1_intro', 0, true)}
             </div>
           </motion.div>
         )}
@@ -751,7 +758,7 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
               <div className="pt-12">
                 <p className="col-header text-white/40">Story Separation +1</p>
               </div>
-              {renderCTA('Continue', 'd2_intro')}
+              {renderCTA('Continue', 'd2_intro', 0, true)}
             </div>
           </motion.div>
         )}
@@ -782,7 +789,7 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 flex flex-col bg-ink text-bg relative p-8"
+            className="flex-1 flex flex-col bg-ink text-white relative p-8"
             onMouseDown={() => setIsHolding(true)}
             onMouseUp={() => setIsHolding(false)}
             onTouchStart={() => setIsHolding(true)}
@@ -803,14 +810,14 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="text-xl font-serif italic"
+                  className="text-xl font-serif italic text-white"
                 >
                   {line}
                 </motion.p>
               ))}
             </div>
 
-            <div className="absolute right-6 top-1/4 bottom-1/4 w-1 bg-bg/10 rounded-full overflow-hidden">
+            <div className="absolute right-6 top-1/4 bottom-1/4 w-1 bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 animate={{ height: `${d2Intensity}%` }}
                 className="w-full bg-accent absolute bottom-0"
@@ -846,7 +853,7 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
               <div className="pt-12">
                 <p className="col-header text-white/40">Pattern Recognition +1</p>
               </div>
-              {renderCTA('Continue', 'd3_play1')}
+              {renderCTA('Continue', 'd3_play1', 0, true)}
             </div>
           </motion.div>
         )}
@@ -964,7 +971,7 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
               <div className="pt-12">
                 <p className="col-header text-white/40">Story Separation +1</p>
               </div>
-              {renderCTA('Continue', 'muscle_summary')}
+              {renderCTA('Continue', 'muscle_summary', 0, true)}
             </div>
           </motion.div>
         )}
@@ -1006,14 +1013,14 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 flex flex-col items-center justify-center p-8 bg-line"
+            className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white"
           >
-            {renderNav()}
+            {renderNav(false, true)}
             <div className="text-center space-y-6">
-              <h2 className="font-serif italic text-4xl">✨ Workout Complete</h2>
-              <p className="col-header">Muscles Activated Today</p>
-              <p className="text-xl opacity-60">“Stories feel real. Separation builds control.”</p>
-              {renderCTA('Continue', 'closing_message')}
+              <h2 className="font-serif italic text-4xl text-white">✨ Workout Complete</h2>
+              <p className="col-header text-white/40">Muscles Activated Today</p>
+              <p className="text-xl text-white/60">“Stories feel real. Separation builds control.”</p>
+              {renderCTA('Continue', 'closing_message', 0, true)}
             </div>
           </motion.div>
         )}
@@ -1148,6 +1155,7 @@ export default function Workout1({ user, userState, onComplete, onBack, onNowCli
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

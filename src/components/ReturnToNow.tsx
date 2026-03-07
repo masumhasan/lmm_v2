@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Home, ArrowLeft, Activity, Eye, Volume2, TouchpadIcon as Touch } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 type RTNScreen = 'entry' | 'visual' | 'audio' | 'physical' | 'exit';
 
@@ -197,10 +198,22 @@ export default function ReturnToNow({ onComplete, onBackToWorkout, isFromWorkout
   };
 
   return (
-    <div className="fixed inset-0 bg-bg z-50 flex items-center justify-center p-8 selection:bg-accent/10 selection:text-accent">
-      <AnimatePresence mode="wait">
-        {renderScreen()}
-      </AnimatePresence>
+    <div className="fixed inset-0 bg-bg z-50 flex items-center justify-center p-8 selection:bg-accent/10 selection:text-accent overflow-hidden">
+      <div className="relative z-10 w-full h-full flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          {renderScreen()}
+        </AnimatePresence>
+      </div>
+      
+      {/* Gradient Footer Lottie */}
+      <div className="absolute bottom-0 left-0 right-0 w-full h-64 pointer-events-none z-0 opacity-60">
+        <DotLottieReact
+          src="/GradientFooter.lottie"
+          loop
+          autoplay
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      </div>
     </div>
   );
 }

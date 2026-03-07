@@ -12,6 +12,7 @@ import MuscleSummary from './components/MuscleSummary';
 import AICoach from './components/AICoach';
 import Onboarding from './components/Onboarding';
 import MuscleDashboard from './components/MuscleDashboard';
+import LottieBackground from './components/LottieBackground';
 import { User, Workout, UserState } from './types';
 import { motion, AnimatePresence } from 'motion/react';
 import { Brain, ArrowRight } from 'lucide-react';
@@ -258,16 +259,25 @@ export default function App() {
               </div>
             </div>
 
-            <section>
-              <h3 className="col-header mb-6">Quick Stats</h3>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="premium-card p-6 border-none shadow-sm">
-                  <div className="text-[10px] uppercase tracking-[0.2em] opacity-40 mb-2">Total Reps</div>
-                  <div className="data-value text-3xl">{userState.progress.reduce((acc, p) => acc + p.reps, 0)}</div>
-                </div>
-                <div className="premium-card p-6 border-none shadow-sm">
-                  <div className="text-[10px] uppercase tracking-[0.2em] opacity-40 mb-2">Streak</div>
-                  <div className="data-value text-3xl">2 Days</div>
+            <section className="relative pb-16">
+              <div className="absolute -inset-x-8 -bottom-24 -top-12 pointer-events-none overflow-hidden">
+                <LottieBackground 
+                  src="/GradientFooter.lottie" 
+                  opacity={1} 
+                  className="w-full h-full"
+                />
+              </div>
+              <div className="relative z-10">
+                <h3 className="col-header mb-6">Quick Stats</h3>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="premium-card p-6 border-none shadow-sm">
+                    <div className="text-[10px] uppercase tracking-[0.2em] opacity-40 mb-2">Total Reps</div>
+                    <div className="data-value text-3xl">{userState.progress.reduce((acc, p) => acc + p.reps, 0)}</div>
+                  </div>
+                  <div className="premium-card p-6 border-none shadow-sm">
+                    <div className="text-[10px] uppercase tracking-[0.2em] opacity-40 mb-2">Streak</div>
+                    <div className="data-value text-3xl">2 Days</div>
+                  </div>
                 </div>
               </div>
             </section>
@@ -277,62 +287,67 @@ export default function App() {
         {activeTab === 'workouts' && (
           <motion.div key="workouts" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             {isTraining && selectedWorkout ? (
-              (selectedWorkout.id === 0 || selectedWorkout.id === 1 || selectedWorkout.id === 2 || selectedWorkout.id === 3 || selectedWorkout.id === 4) ? (
-              <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-                <Brain size={48} className="opacity-20 animate-pulse" />
-                <p className="text-sm opacity-40 uppercase tracking-widest">Training Session Active</p>
-                <button 
-                  onClick={() => setActiveTab('workouts')} 
-                  className="bg-accent text-bg px-8 py-3 rounded-full text-xs uppercase tracking-widest"
-                >
-                  Resume Workout
-                </button>
+              <div className="relative min-h-[80vh]">
+                <LottieBackground src="/wave-bg.lottie" opacity={0.3} className="z-0" />
+                <div className="relative z-10">
+                  {(selectedWorkout.id === 0 || selectedWorkout.id === 1 || selectedWorkout.id === 2 || selectedWorkout.id === 3 || selectedWorkout.id === 4) ? (
+                    <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
+                      <Brain size={48} className="opacity-20 animate-pulse" />
+                      <p className="text-sm opacity-40 uppercase tracking-widest">Training Session Active</p>
+                      <button 
+                        onClick={() => setActiveTab('workouts')} 
+                        className="bg-accent text-bg px-8 py-3 rounded-full text-xs uppercase tracking-widest"
+                      >
+                        Resume Workout
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-12 text-center py-12">
+                      <div className="space-y-2">
+                        <h2 className="font-serif italic text-3xl">{selectedWorkout.title}</h2>
+                        <p className="text-xs opacity-50 uppercase tracking-widest">Repetition {repsDone} / {selectedWorkout.reps}</p>
+                      </div>
+
+                      <div className="relative w-48 h-48 mx-auto">
+                        <svg className="w-full h-full transform -rotate-90">
+                          <circle
+                            cx="96" cy="96" r="80"
+                            stroke="currentColor" strokeWidth="4" fill="transparent"
+                            className="text-ink/5"
+                          />
+                          <motion.circle
+                            cx="96" cy="96" r="80"
+                            stroke="currentColor" strokeWidth="4" fill="transparent"
+                            strokeDasharray="502.6"
+                            initial={{ strokeDashoffset: 502.6 }}
+                            animate={{ strokeDashoffset: 502.6 - (repsDone / selectedWorkout.reps) * 502.6 }}
+                            className="text-accent"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Brain size={48} className="opacity-20 text-accent" />
+                        </div>
+                      </div>
+
+                      <div className="absolute bottom-32 left-6 right-6 flex justify-center">
+                        <button
+                          onClick={() => {
+                            if (repsDone < selectedWorkout.reps) {
+                              setRepsDone(prev => prev + 1);
+                            } else {
+                              completeWorkout();
+                            }
+                          }}
+                          className="w-full bg-accent text-bg py-6 rounded-3xl font-serif italic text-xl shadow-xl active:scale-95 transition-transform"
+                        >
+                          {repsDone < selectedWorkout.reps ? 'Tap to Rep' : 'Finish Workout'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
-                <div className="space-y-12 text-center py-12">
-                <div className="space-y-2">
-                  <h2 className="font-serif italic text-3xl">{selectedWorkout.title}</h2>
-                  <p className="text-xs opacity-50 uppercase tracking-widest">Repetition {repsDone} / {selectedWorkout.reps}</p>
-                </div>
-
-                <div className="relative w-48 h-48 mx-auto">
-                  <svg className="w-full h-full transform -rotate-90">
-                    <circle
-                      cx="96" cy="96" r="80"
-                      stroke="currentColor" strokeWidth="4" fill="transparent"
-                      className="text-ink/5"
-                    />
-                    <motion.circle
-                      cx="96" cy="96" r="80"
-                      stroke="currentColor" strokeWidth="4" fill="transparent"
-                      strokeDasharray="502.6"
-                      initial={{ strokeDashoffset: 502.6 }}
-                      animate={{ strokeDashoffset: 502.6 - (repsDone / selectedWorkout.reps) * 502.6 }}
-                      className="text-accent"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Brain size={48} className="opacity-20 text-accent" />
-                  </div>
-                </div>
-
-                <div className="absolute bottom-32 left-6 right-6 flex justify-center">
-                  <button
-                    onClick={() => {
-                      if (repsDone < selectedWorkout.reps) {
-                        setRepsDone(prev => prev + 1);
-                      } else {
-                        completeWorkout();
-                      }
-                    }}
-                    className="w-full bg-accent text-bg py-6 rounded-3xl font-serif italic text-xl shadow-xl active:scale-95 transition-transform"
-                  >
-                    {repsDone < selectedWorkout.reps ? 'Tap to Rep' : 'Finish Workout'}
-                  </button>
-                </div>
-              </div>
-            )
-          ) : (
             <WorkoutList 
               onSelect={(w) => {
                 setSelectedWorkout(w);

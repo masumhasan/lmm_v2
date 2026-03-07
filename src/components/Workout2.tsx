@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Brain, ArrowLeft, Home, Menu, X, CheckCircle2, AlertCircle, Zap, Activity, Repeat, Eye, Shield, Lock, Play } from 'lucide-react';
 import { User, UserState } from '../types';
+import LottieBackground from './LottieBackground';
 
 interface Workout2Props {
   user: User;
@@ -146,15 +147,15 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
     }
   }, [currentScreen]);
 
-  const renderNav = (showHome = false) => (
-    <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-50">
+  const renderNav = (showHome = false, isDark = false) => (
+    <div className={`absolute top-6 left-6 right-6 flex justify-between items-center z-50 ${isDark ? 'text-white' : 'text-ink'}`}>
       <div className="flex items-center gap-4">
-        <button onClick={onBack} className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">
+        <button onClick={onBack} className={`flex items-center gap-2 text-xs uppercase tracking-widest transition-opacity ${isDark ? 'text-white/50 hover:text-white' : 'opacity-50 hover:opacity-100'}`}>
           <ArrowLeft size={14} /> Back
         </button>
         <button 
           onClick={() => setShowSections(true)}
-          className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+          className={`flex items-center gap-2 text-xs uppercase tracking-widest transition-opacity ${isDark ? 'text-white/50 hover:text-white' : 'opacity-50 hover:opacity-100'}`}
         >
           <Menu size={14} /> Sections
         </button>
@@ -163,13 +164,17 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
         {!isDrill && (
           <button 
             onClick={onNowClick}
-            className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity bg-accent/5 px-3 py-1.5 rounded-full text-accent"
+            className={`flex items-center gap-1.5 text-[10px] uppercase tracking-widest transition-opacity px-3 py-1.5 rounded-full ${
+              isDark 
+                ? 'bg-white/10 text-white hover:bg-white/20' 
+                : 'bg-accent/5 text-accent opacity-40 hover:opacity-100'
+            }`}
           >
             <Brain size={12} /> Now
           </button>
         )}
         {showHome && !isDrill && (
-          <button onClick={onBack} className="opacity-50 hover:opacity-100 transition-opacity">
+          <button onClick={onBack} className={`${isDark ? 'text-white/50 hover:text-white' : 'opacity-50 hover:opacity-100'} transition-opacity`}>
             <Home size={18} />
           </button>
         )}
@@ -177,7 +182,7 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
     </div>
   );
 
-  const renderCTA = (text: string, next: Screen, delay = 0) => (
+  const renderCTA = (text: string, next: Screen, delay = 0, isDark = false) => (
     <motion.div 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
@@ -186,7 +191,7 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
     >
       <button
         onClick={() => setCurrentScreen(next)}
-        className="bg-accent text-bg px-12 py-4 rounded-full font-medium hover:scale-105 active:scale-95 transition-all"
+        className={`${isDark ? 'bg-white text-accent hover:bg-white/90' : 'bg-accent text-bg'} px-12 py-4 rounded-full font-medium hover:scale-105 active:scale-95 transition-all shadow-lg`}
       >
         ▶ {text}
       </button>
@@ -195,7 +200,9 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
 
   return (
     <div className="fixed inset-0 bg-bg z-50 overflow-hidden flex flex-col">
-      <AnimatePresence>
+      <LottieBackground src="/wave-bg.lottie" opacity={0.2} className="z-0" />
+      <div className="relative z-10 flex-1 flex flex-col overflow-hidden">
+        <AnimatePresence>
         {showSections && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -250,9 +257,9 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 relative flex flex-col items-center overflow-hidden"
+            className="flex-1 relative flex flex-col items-center overflow-hidden bg-accent text-white"
           >
-            {renderNav()}
+            {renderNav(false, true)}
             
             {/* Centered Animation */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -260,11 +267,11 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
                 <motion.div
                   animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
                   transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inset-0 bg-accent rounded-full blur-3xl"
+                  className="absolute inset-0 bg-white rounded-full blur-3xl"
                 />
-                <div className="w-32 h-32 border border-accent/20 rounded-full flex items-center justify-center relative">
-                  <div className="absolute inset-0 border border-accent/10 rounded-full scale-110" />
-                  <Brain size={32} className="opacity-20 text-accent" />
+                <div className="w-32 h-32 border border-white/20 rounded-full flex items-center justify-center relative">
+                  <div className="absolute inset-0 border border-white/10 rounded-full scale-110" />
+                  <Brain size={32} className="opacity-20 text-white" />
                 </div>
               </div>
             </div>
@@ -272,12 +279,12 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
             {/* Bottom Text */}
             <div className="absolute top-[62%] w-full px-8 text-center">
               <div className="h-32 flex flex-col justify-center space-y-4">
-                <p className="font-serif italic text-2xl">Today you’ll see the loop.</p>
-                <p className="text-sm opacity-50">Not as an idea — as a pattern.</p>
-                <p className="text-xs opacity-30 italic">“Once you see it, you can spot where fuel gets added.”</p>
+                <p className="font-serif italic text-2xl text-white">Today you’ll see the loop.</p>
+                <p className="text-sm text-white/50">Not as an idea — as a pattern.</p>
+                <p className="text-xs text-white/30 italic">“Once you see it, you can spot where fuel gets added.”</p>
               </div>
             </div>
-            {renderCTA('Begin Workout', 'main_narration', 2)}
+            {renderCTA('Begin Workout', 'main_narration', 2, true)}
           </motion.div>
         )}
 
@@ -500,12 +507,12 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
         )}
 
         {currentScreen === 'penny_drop' && (
-          <motion.div key="penny_drop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="penny_drop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-8 max-w-xs">
-              <h2 className="font-serif italic text-3xl">The loop grows here — not at the first sensation.</h2>
-              <p className="text-xl opacity-60">But at the alarm about the sensation.</p>
-              <p className="text-sm opacity-40 italic">“Nothing new happened. The echo was treated as new.”</p>
-              {renderCTA('Continue', 'metaphor')}
+              <h2 className="font-serif italic text-3xl text-white">The loop grows here — not at the first sensation.</h2>
+              <p className="text-xl text-white/60">But at the alarm about the sensation.</p>
+              <p className="text-sm text-white/40 italic">“Nothing new happened. The echo was treated as new.”</p>
+              {renderCTA('Continue', 'metaphor', 0, true)}
             </div>
           </motion.div>
         )}
@@ -585,12 +592,12 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
         )}
 
         {currentScreen === 'd1_penny' && (
-          <motion.div key="d1_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="d1_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-8 max-w-xs">
-              <h2 className="font-serif italic text-3xl">The sensation did not multiply. The meaning multiplied.</h2>
-              <p className="opacity-60">Repetition is added fuel. The loop grows from reaction to reaction.</p>
-              <p className="text-[10px] uppercase tracking-widest opacity-40">Rep Logged: Escalation Awareness +1</p>
-              {renderCTA('Next Drill', 'd2_entry')}
+              <h2 className="font-serif italic text-3xl text-white">The sensation did not multiply. The meaning multiplied.</h2>
+              <p className="text-white/60">Repetition is added fuel. The loop grows from reaction to reaction.</p>
+              <p className="text-[10px] uppercase tracking-widest text-white/40">Rep Logged: Escalation Awareness +1</p>
+              {renderCTA('Next Drill', 'd2_entry', 0, true)}
             </div>
           </motion.div>
         )}
@@ -619,8 +626,8 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
         )}
 
         {currentScreen === 'd2_play_loop' && (
-          <motion.div key="d2_play_loop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-ink text-bg">
-            <div className="absolute top-12 text-[10px] uppercase tracking-widest opacity-40">Round {d2Round} / 3</div>
+          <motion.div key="d2_play_loop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-ink text-white">
+            <div className="absolute top-12 text-[10px] uppercase tracking-widest text-white/40">Round {d2Round} / 3</div>
             
             <div className="relative w-48 h-48 flex items-center justify-center">
               <motion.div
@@ -630,11 +637,11 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
                 style={{ borderWidth: `${2 + d2Intensity/10}px` }}
               />
               <div className="text-center space-y-4">
-                <p className="text-lg opacity-60">Sensation</p>
+                <p className="text-lg text-white/60">Sensation</p>
                 {d2Phase === 2 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-1">
                     <p className="text-xl font-serif italic text-accent">What if this gets worse?</p>
-                    <p className="text-[8px] uppercase opacity-30">Answer it.</p>
+                    <p className="text-[8px] uppercase text-white/30">Answer it.</p>
                   </motion.div>
                 )}
               </div>
@@ -655,7 +662,7 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
                     }
                   }, 1500);
                 }}
-                className="bg-accent text-bg py-4 rounded-full text-xs uppercase tracking-widest font-bold"
+                className="bg-accent text-white py-4 rounded-full text-xs uppercase tracking-widest font-bold"
               >
                 ECHO
               </button>
@@ -672,7 +679,7 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
                     }
                   }, 1500);
                 }}
-                className="bg-bg/10 text-bg py-4 rounded-full text-xs uppercase tracking-widest font-bold"
+                className="bg-white/10 text-white py-4 rounded-full text-xs uppercase tracking-widest font-bold"
               >
                 Not Now
               </button>
@@ -680,19 +687,19 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
 
             {d2Answered !== null && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 flex items-center justify-center bg-ink/80 backdrop-blur-sm">
-                <p className="text-xl font-serif italic">{d2Answered ? "That was the second alarm." : "Restraint."}</p>
+                <p className="text-xl font-serif italic text-white">{d2Answered ? "That was the second alarm." : "Restraint."}</p>
               </motion.div>
             )}
           </motion.div>
         )}
 
         {currentScreen === 'd2_penny' && (
-          <motion.div key="d2_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="d2_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-8 max-w-xs">
-              <h2 className="font-serif italic text-3xl">The second alarm only survives when it’s answered.</h2>
-              <p className="opacity-60">You didn’t answer. That’s restraint.</p>
-              <p className="text-[10px] uppercase tracking-widest opacity-40">Rep Logged: Loop Disruption +1</p>
-              {renderCTA('Next Drill', 'd3_entry')}
+              <h2 className="font-serif italic text-3xl text-white">The second alarm only survives when it’s answered.</h2>
+              <p className="text-white/60">You didn’t answer. That’s restraint.</p>
+              <p className="text-[10px] uppercase tracking-widest text-white/40">Rep Logged: Loop Disruption +1</p>
+              {renderCTA('Next Drill', 'd3_entry', 0, true)}
             </div>
           </motion.div>
         )}
@@ -752,12 +759,12 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
         )}
 
         {currentScreen === 'd3_penny' && (
-          <motion.div key="d3_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="d3_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-8 max-w-xs">
-              <h2 className="font-serif italic text-3xl">You found the growth point.</h2>
-              <p className="opacity-60">The loop expands when fear is added to sensation. Interrupt here — and escalation cannot multiply.</p>
-              <p className="text-[10px] uppercase tracking-widest opacity-40">Rep Logged: Loop Disruption +1</p>
-              {renderCTA('Continue', 'muscle_summary')}
+              <h2 className="font-serif italic text-3xl text-white">You found the growth point.</h2>
+              <p className="text-white/60">The loop expands when fear is added to sensation. Interrupt here — and escalation cannot multiply.</p>
+              <p className="text-[10px] uppercase tracking-widest text-white/40">Rep Logged: Loop Disruption +1</p>
+              {renderCTA('Continue', 'muscle_summary', 0, true)}
             </div>
           </motion.div>
         )}
@@ -786,13 +793,13 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
         )}
 
         {currentScreen === 'closing_transition' && (
-          <motion.div key="closing_transition" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-line">
-            {renderNav()}
+          <motion.div key="closing_transition" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
+            {renderNav(false, true)}
             <div className="text-center space-y-6">
-              <h2 className="font-serif italic text-4xl">✨ Workout 2 Complete</h2>
-              <p className="col-header">Set Summary</p>
-              <p className="text-xl opacity-60">“The alarm isn’t endless — it’s a loop.”</p>
-              {renderCTA('Continue', 'closing_core')}
+              <h2 className="font-serif italic text-4xl text-white">✨ Workout 2 Complete</h2>
+              <p className="col-header text-white/40">Set Summary</p>
+              <p className="text-xl text-white/60">“The alarm isn’t endless — it’s a loop.”</p>
+              {renderCTA('Continue', 'closing_core', 0, true)}
             </div>
           </motion.div>
         )}
@@ -1086,6 +1093,7 @@ export default function Workout2({ user, userState, onComplete, onBack, onNowCli
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

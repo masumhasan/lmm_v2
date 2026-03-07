@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'motion/react';
-import { Brain, ArrowLeft, Home, Menu, X, CheckCircle2, Activity, Shield, Zap, Eye, Lock, Play, MessageSquare, Mic, Tag, Cloud, Wind, Scissors, Timer, ChevronRight } from 'lucide-react';
+import { Brain, ArrowLeft, Home, Menu, X, CheckCircle2, Activity, Shield, Zap, Eye, Lock, Play, MessageSquare, Mic, Tag, Wind, Scissors, Timer, ChevronRight } from 'lucide-react';
 import { User, UserState } from '../types';
+import LottieBackground from './LottieBackground';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 interface Workout4Props {
   user: User;
@@ -187,27 +189,33 @@ export default function Workout4({ user, userState, onComplete, onBack, onNowCli
     }
   }, [currentScreen]);
 
-  const renderNav = () => (
+  const renderNav = (isDark = false) => (
     <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-50">
       <div className="flex items-center gap-4">
-        <button onClick={onBack} className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">
+        <button onClick={onBack} className={`flex items-center gap-2 text-xs uppercase tracking-widest transition-opacity ${isDark ? 'text-white/50 hover:text-white' : 'opacity-50 hover:opacity-100'}`}>
           <ArrowLeft size={14} /> Back
         </button>
-        <button onClick={() => setShowSections(true)} className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity">
+        <button onClick={() => setShowSections(true)} className={`flex items-center gap-2 text-xs uppercase tracking-widest transition-opacity ${isDark ? 'text-white/50 hover:text-white' : 'opacity-50 hover:opacity-100'}`}>
           <Menu size={14} /> Sections
         </button>
       </div>
       {!isDrill && (
-        <button onClick={onNowClick} className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity bg-accent/5 px-3 py-1.5 rounded-full text-accent">
+        <button onClick={onNowClick} className={`flex items-center gap-1.5 text-[10px] uppercase tracking-widest transition-opacity px-3 py-1.5 rounded-full ${
+          isDark 
+            ? 'bg-white/10 text-white border border-white/20 opacity-60 hover:opacity-100' 
+            : 'bg-accent/5 text-accent opacity-40 hover:opacity-100'
+        }`}>
           <Brain size={12} /> Now
         </button>
       )}
     </div>
   );
 
-  const renderCTA = (text: string, next: Screen, delay = 0) => (
+  const renderCTA = (text: string, next: Screen, delay = 0, isDark = false) => (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay }} className="absolute bottom-32 left-6 right-6 flex justify-center">
-      <button onClick={() => setCurrentScreen(next)} className="bg-accent text-bg px-12 py-4 rounded-full font-medium hover:scale-105 active:scale-95 transition-all">
+      <button onClick={() => setCurrentScreen(next)} className={`px-12 py-4 rounded-full font-medium hover:scale-105 active:scale-95 transition-all ${
+        isDark ? 'bg-white text-accent' : 'bg-accent text-bg'
+      }`}>
         ▶ {text}
       </button>
     </motion.div>
@@ -215,7 +223,9 @@ export default function Workout4({ user, userState, onComplete, onBack, onNowCli
 
   return (
     <div className="fixed inset-0 bg-bg z-50 overflow-hidden flex flex-col font-sans text-ink">
-      <AnimatePresence>
+      <LottieBackground src="/wave-bg.lottie" opacity={0.2} className="z-0" />
+      <div className="relative z-10 flex-1 flex flex-col overflow-hidden">
+        <AnimatePresence>
         {showSections && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-bg/95 backdrop-blur-md p-8 flex flex-col">
             <div className="flex justify-between items-center mb-12">
@@ -248,28 +258,34 @@ export default function Workout4({ user, userState, onComplete, onBack, onNowCli
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 relative flex flex-col items-center overflow-hidden bg-gradient-to-b from-blue-50/20 to-bg"
+            className="flex-1 relative flex flex-col items-center overflow-hidden bg-accent text-white"
           >
-            {renderNav()}
+            {renderNav(true)}
             
             {/* Centered Animation */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              <div className="relative h-32 flex items-center justify-center">
-                <motion.div animate={{ rotate: 360 }} transition={{ duration: 24, repeat: Infinity, ease: "linear" }} className="absolute text-accent/10"><Cloud size={120} /></motion.div>
-                <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 4, repeat: Infinity }} className="w-16 h-16 bg-accent/5 rounded-full blur-xl" />
+            <div className="absolute top-[38%] left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <div className="relative h-64 w-64 flex items-center justify-center">
+                <div className="absolute inset-0 opacity-80">
+                  <DotLottieReact
+                    src="/weather.lottie"
+                    loop
+                    autoplay
+                  />
+                </div>
+                <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 4, repeat: Infinity }} className="w-24 h-24 bg-white/10 rounded-full blur-2xl" />
               </div>
             </div>
 
             {/* Bottom Text */}
-            <div className="absolute top-[62%] w-full px-8 text-center">
+            <div className="absolute top-[55%] w-full px-8 text-center">
               <div className="h-32 flex flex-col justify-center space-y-4">
-                <p className="font-serif italic text-2xl">“The mind doesn’t get loud by accident.”</p>
-                <p className="font-serif italic text-2xl">“Noise is a signal.”</p>
-                <p className="text-sm opacity-50">Today, you learn why it happens.</p>
+                <p className="font-serif italic text-2xl text-white">“The mind doesn’t get loud by accident.”</p>
+                <p className="font-serif italic text-2xl text-white">“Noise is a signal.”</p>
+                <p className="text-sm opacity-50 text-white/70">Today, you learn why it happens.</p>
               </div>
-              <p className="text-[10px] uppercase tracking-widest opacity-30 mt-4">Workout start — muscles load in 2 seconds.</p>
+              <p className="text-[10px] uppercase tracking-widest opacity-30 mt-4 text-white/40">Workout start — muscles load in 2 seconds.</p>
             </div>
-            {renderCTA('Begin Workout', 'main_narration', 2.2)}
+            {renderCTA('Begin Workout', 'main_narration', 2.2, true)}
           </motion.div>
         )}
 
@@ -428,12 +444,12 @@ export default function Workout4({ user, userState, onComplete, onBack, onNowCli
 
         {currentScreen === 'why_thinking_fails' && (
           <motion.div key="why_thinking_fails" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-ink text-bg">
-            {renderNav()}
+            {renderNav(true)}
             <div className="text-center space-y-8 max-w-xs">
               <h2 className="font-serif italic text-3xl">What doesn’t work.</h2>
               <p className="opacity-60">Trying to think your way out of noise keeps attention exactly where it is.</p>
               <p className="text-xl font-serif italic">“More thinking feeds the loop.”</p>
-              {renderCTA('Continue', 'core_shift')}
+              {renderCTA('Continue', 'core_shift', 0, true)}
             </div>
           </motion.div>
         )}
@@ -523,22 +539,22 @@ export default function Workout4({ user, userState, onComplete, onBack, onNowCli
         )}
 
         {currentScreen === 'd1_lockin' && (
-          <motion.div key="d1_lockin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="d1_lockin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-6">
-              <p className="text-2xl font-serif italic">“You didn’t stop thoughts. You stopped feeding them.”</p>
-              <p className="text-sm opacity-60">Noise runs when it’s fed.</p>
-              {renderCTA('Continue', 'd1_penny')}
+              <p className="text-2xl font-serif italic text-white">“You didn’t stop thoughts. You stopped feeding them.”</p>
+              <p className="text-sm opacity-60 text-white/70">Noise runs when it’s fed.</p>
+              {renderCTA('Continue', 'd1_penny', 0, true)}
             </div>
           </motion.div>
         )}
 
         {currentScreen === 'd1_penny' && (
-          <motion.div key="d1_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="d1_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-8 max-w-xs">
-              <h2 className="font-serif italic text-3xl">Noise runs on attention.</h2>
-              <p className="opacity-60">You didn’t stop thoughts. You removed fuel.</p>
-              <p className="text-[10px] uppercase tracking-widest opacity-40">Rep Logged: Attention Control +1</p>
-              {renderCTA('Next Drill', 'd2_entry')}
+              <h2 className="font-serif italic text-3xl text-white">Noise runs on attention.</h2>
+              <p className="opacity-60 text-white/70">You didn’t stop thoughts. You removed fuel.</p>
+              <p className="text-[10px] uppercase tracking-widest opacity-40 text-white/40">Rep Logged: Attention Control +1</p>
+              {renderCTA('Next Drill', 'd2_entry', 0, true)}
             </div>
           </motion.div>
         )}
@@ -604,21 +620,21 @@ export default function Workout4({ user, userState, onComplete, onBack, onNowCli
         )}
 
         {currentScreen === 'd2_lockin' && (
-          <motion.div key="d2_lockin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="d2_lockin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-6">
-              <p className="text-2xl font-serif italic">“Urgency is not intelligence. It’s pressure.”</p>
-              {renderCTA('Continue', 'd2_penny')}
+              <p className="text-2xl font-serif italic text-white">“Urgency is not intelligence. It’s pressure.”</p>
+              {renderCTA('Continue', 'd2_penny', 0, true)}
             </div>
           </motion.div>
         )}
 
         {currentScreen === 'd2_penny' && (
-          <motion.div key="d2_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="d2_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-8 max-w-xs">
-              <h2 className="font-serif italic text-3xl">Delay breaks authority.</h2>
-              <p className="opacity-60">Urgency promised consequences. Nothing arrived.</p>
-              <p className="text-[10px] uppercase tracking-widest opacity-40">Rep Logged: Urgency Resistance +1</p>
-              {renderCTA('Next Drill', 'd3_entry')}
+              <h2 className="font-serif italic text-3xl text-white">Delay breaks authority.</h2>
+              <p className="opacity-60 text-white/70">Urgency promised consequences. Nothing arrived.</p>
+              <p className="text-[10px] uppercase tracking-widest opacity-40 text-white/40">Rep Logged: Urgency Resistance +1</p>
+              {renderCTA('Next Drill', 'd3_entry', 0, true)}
             </div>
           </motion.div>
         )}
@@ -688,21 +704,21 @@ export default function Workout4({ user, userState, onComplete, onBack, onNowCli
         )}
 
         {currentScreen === 'd3_lockin' && (
-          <motion.div key="d3_lockin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="d3_lockin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-6">
-              <p className="text-2xl font-serif italic">“Thoughts don't need endings. They need less authority.”</p>
-              {renderCTA('Continue', 'd3_penny')}
+              <p className="text-2xl font-serif italic text-white">“Thoughts don't need endings. They need less authority.”</p>
+              {renderCTA('Continue', 'd3_penny', 0, true)}
             </div>
           </motion.div>
         )}
 
         {currentScreen === 'd3_penny' && (
-          <motion.div key="d3_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg">
+          <motion.div key="d3_penny" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-8 max-w-xs">
-              <h2 className="font-serif italic text-3xl">Nothing required an ending.</h2>
-              <p className="opacity-60">The thought stayed unfinished. You didn’t complete it.</p>
-              <p className="text-[10px] uppercase tracking-widest opacity-40">Rep Logged: Completion Tolerance +1</p>
-              {renderCTA('Finish Drills', 'drills_complete')}
+              <h2 className="font-serif italic text-3xl text-white">Nothing required an ending.</h2>
+              <p className="opacity-60 text-white/70">The thought stayed unfinished. You didn’t complete it.</p>
+              <p className="text-[10px] uppercase tracking-widest opacity-40 text-white/40">Rep Logged: Completion Tolerance +1</p>
+              {renderCTA('Finish Drills', 'drills_complete', 0, true)}
             </div>
           </motion.div>
         )}
@@ -748,11 +764,11 @@ export default function Workout4({ user, userState, onComplete, onBack, onNowCli
         )}
 
         {currentScreen === 'closing_transition' && (
-          <motion.div key="closing_transition" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-gradient-to-b from-blue-50/10 to-bg">
+          <motion.div key="closing_transition" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white">
             <div className="text-center space-y-6">
-              <h2 className="font-serif italic text-4xl">✨ What Just Changed</h2>
-              <p className="opacity-60">The system no longer runs your attention automatically.</p>
-              {renderCTA('Continue', 'closing_main')}
+              <h2 className="font-serif italic text-4xl text-white">✨ What Just Changed</h2>
+              <p className="opacity-60 text-white/70">The system no longer runs your attention automatically.</p>
+              {renderCTA('Continue', 'closing_main', 0, true)}
             </div>
           </motion.div>
         )}
@@ -908,6 +924,7 @@ export default function Workout4({ user, userState, onComplete, onBack, onNowCli
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

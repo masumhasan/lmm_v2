@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Brain, ArrowLeft, ArrowRight, Home, LayoutGrid, CheckCircle2, AlertCircle, Bell, Calendar, Phone, Users, Info, MessageSquare, Lock, Menu, X } from 'lucide-react';
 import { User, UserState, Workout } from '../types';
+import LottieBackground from './LottieBackground';
 
 interface WorkoutZeroProps {
   user: User;
@@ -117,15 +118,15 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
     }
   }, [currentScreen]);
 
-  const renderNav = (showHome = false) => (
+  const renderNav = (showHome = false, isDark = false) => (
     <div className="absolute top-8 left-8 right-8 flex justify-between items-center z-50">
       <div className="flex items-center gap-6">
-        <button onClick={onBack} className="btn-passive flex items-center gap-2">
+        <button onClick={onBack} className={`btn-passive flex items-center gap-2 ${isDark ? 'text-white/50 hover:text-white' : ''}`}>
           <ArrowLeft size={14} /> Back
         </button>
         <button 
           onClick={() => setShowSections(true)}
-          className="btn-passive flex items-center gap-2"
+          className={`btn-passive flex items-center gap-2 ${isDark ? 'text-white/50 hover:text-white' : ''}`}
         >
           <Menu size={14} /> Sections
         </button>
@@ -134,13 +135,17 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
         {!isDrill && (
           <button 
             onClick={onNowClick}
-            className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-all duration-500 bg-accent/5 px-4 py-2 rounded-full text-accent border border-accent/10"
+            className={`flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] transition-all duration-500 px-4 py-2 rounded-full border ${
+              isDark 
+                ? 'bg-white/10 text-white border-white/20 opacity-60 hover:opacity-100' 
+                : 'bg-accent/5 text-accent border-accent/10 opacity-40 hover:opacity-100'
+            }`}
           >
             <Brain size={12} /> Reset
           </button>
         )}
         {showHome && (
-          <button onClick={onBack} className="opacity-30 hover:opacity-100 transition-all duration-500">
+          <button onClick={onBack} className={`transition-all duration-500 ${isDark ? 'text-white/30 hover:text-white' : 'opacity-30 hover:opacity-100'}`}>
             <Home size={18} />
           </button>
         )}
@@ -148,7 +153,7 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
     </div>
   );
 
-  const renderCTA = (text: string, next: Screen, disabled = false) => (
+  const renderCTA = (text: string, next: Screen, disabled = false, isDark = false) => (
     <motion.div 
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
@@ -160,7 +165,11 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
           setCurrentScreen(next);
           if (window.navigator.vibrate) window.navigator.vibrate(10);
         }}
-        className={`btn-primary min-w-[240px] ${disabled ? 'opacity-20 grayscale cursor-not-allowed' : 'hover:shadow-accent/30'}`}
+        className={`btn-primary min-w-[240px] ${
+          isDark 
+            ? 'bg-white text-accent hover:bg-white/90' 
+            : 'bg-accent text-bg hover:shadow-accent/30'
+        } ${disabled ? 'opacity-20 grayscale cursor-not-allowed' : ''}`}
       >
         {text}
       </button>
@@ -169,7 +178,9 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
 
   return (
     <div className="fixed inset-0 bg-bg z-50 overflow-hidden flex flex-col">
-      <AnimatePresence>
+      <LottieBackground src="/wave-bg.lottie" opacity={0.2} className="z-0" />
+      <div className="relative z-10 flex-1 flex flex-col overflow-hidden">
+        <AnimatePresence>
         {showSections && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -231,10 +242,10 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 relative flex flex-col items-center overflow-hidden"
+            className="flex-1 relative flex flex-col items-center overflow-hidden bg-accent text-white"
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-orange-100/20 to-transparent pointer-events-none" />
-            {renderNav()}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+            {renderNav(false, true)}
             
             {/* Top Instruction */}
             <motion.div
@@ -252,10 +263,10 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
                 <motion.div
                   animate={breathCycle === 1 ? {
                     scale: [1, 1.4, 1],
-                    opacity: [0.1, 0.15, 0.1]
+                    opacity: [0.1, 0.2, 0.1]
                   } : { scale: 1, opacity: 0.1 }}
                   transition={{ duration: 10, times: [0, 0.4, 1], ease: "easeInOut" }}
-                  className="absolute inset-0 bg-accent rounded-full blur-3xl"
+                  className="absolute inset-0 bg-white rounded-full blur-3xl"
                 />
                 <motion.div
                   animate={breathCycle === 1 ? {
@@ -263,9 +274,9 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
                   } : { scale: 1 }}
                   transition={{ duration: 10, times: [0, 0.4, 1], ease: "easeInOut" }}
                   onAnimationComplete={() => setBreathCycle(2)}
-                  className="w-32 h-32 border border-accent/20 rounded-full flex items-center justify-center"
+                  className="w-32 h-32 border border-white/20 rounded-full flex items-center justify-center"
                 >
-                  <Brain size={32} className="opacity-20 text-accent" />
+                  <Brain size={32} className="opacity-40 text-white" />
                 </motion.div>
               </div>
             </div>
@@ -279,7 +290,7 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="font-serif italic text-2xl"
+                      className="font-serif italic text-2xl text-white"
                     >
                       Inhale: I’m here.
                     </motion.p>
@@ -290,8 +301,8 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
                       animate={{ opacity: 1 }}
                       className="space-y-4"
                     >
-                      <p className="font-serif italic text-2xl">Exhale: Back to now.</p>
-                      <p className="text-xs opacity-50 leading-relaxed max-w-[280px] mx-auto">This is not about fixing your mind. This is the first repetition in training it.</p>
+                      <p className="font-serif italic text-2xl text-white">Exhale: Back to now.</p>
+                      <p className="text-xs opacity-50 leading-relaxed max-w-[280px] mx-auto text-white/70">This is not about fixing your mind. This is the first repetition in training it.</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -304,10 +315,10 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
                 animate={{ opacity: 1 }} 
                 className="absolute bottom-24 left-6 right-6 flex flex-col items-center gap-6"
               >
-                <p className="col-header">You are training attention.</p>
+                <p className="col-header text-white/40">You are training attention.</p>
                 <button
                   onClick={() => setCurrentScreen('edu_intro')}
-                  className="bg-accent text-bg px-12 py-4 rounded-full font-medium hover:scale-105 active:scale-95 transition-all"
+                  className="bg-white text-accent px-12 py-4 rounded-full font-medium hover:scale-105 active:scale-95 transition-all shadow-lg shadow-white/10"
                 >
                   ▶ Begin Workout
                 </button>
@@ -1253,14 +1264,14 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 flex flex-col items-center justify-center p-8 bg-line"
+            className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white"
           >
-            {renderNav()}
+            {renderNav(false, true)}
             <div className="text-center space-y-6">
-              <h2 className="font-serif italic text-4xl">✨ Workout Complete</h2>
-              <p className="col-header">Muscles Activated Today</p>
-              <p className="text-xl opacity-60">“Your system isn’t the enemy.”</p>
-              {renderCTA('Continue', 'closing_main')}
+              <h2 className="font-serif italic text-4xl text-white">✨ Workout Complete</h2>
+              <p className="col-header text-white/40">Muscles Activated Today</p>
+              <p className="text-xl opacity-60 text-white/70">“Your system isn’t the enemy.”</p>
+              {renderCTA('Continue', 'closing_main', false, true)}
             </div>
           </motion.div>
         )}
@@ -1535,15 +1546,15 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
             key="sr1_penny"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-bg"
+            className="flex-1 flex flex-col items-center justify-center p-8 bg-accent text-white"
           >
             <div className="space-y-8 text-center">
-              <h2 className="font-serif italic text-3xl">Belief wasn’t chosen logically.</h2>
-              <p className="text-xl opacity-60">It felt familiar.</p>
+              <h2 className="font-serif italic text-3xl text-white">Belief wasn’t chosen logically.</h2>
+              <p className="text-xl opacity-60 text-white/70">It felt familiar.</p>
               <div className="pt-12">
-                <p className="text-[10px] uppercase tracking-[0.3em] opacity-40">Rep Logged: Pattern Recognition +1</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] opacity-40 text-white/40">Rep Logged: Pattern Recognition +1</p>
               </div>
-              {renderCTA('Finish Workout', 'complete')}
+              {renderCTA('Finish Workout', 'complete', false, true)}
             </div>
           </motion.div>
         )}
@@ -1581,6 +1592,7 @@ export default function WorkoutZero({ user, userState, onComplete, onBack, onNow
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }
